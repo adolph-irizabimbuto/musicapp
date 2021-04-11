@@ -4,12 +4,12 @@ const mongoose = require('mongoose');
 const flash = require('connect-flash');
 const session = require('express-session');
 const passport = require('passport');
-const cors = require('cors');
+
 
 
 
 const app = express();
-app.use(cors());
+
  //Passport Config
  require('./config/passport')(passport);
 
@@ -64,21 +64,12 @@ app.use((req,res,next) => {
 
 app.use('/', require('./routes/index'));
 app.use('/users', require('./routes/users'));
-const posts = require('./routes/api/posts');
-app.use('/api/posts', posts);
 
 
 
 
-//Handle Production
-if(process.env.NODE_ENV === 'production'){
-    // Static Folder
-    app.use(express.static(__dirname + '/public/'));
 
-    //Handle SPA
-    app.get(/.*/, (req, res) => res.sendFile(__dirname + '/public/index.html'));
-}
 
-const port = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5000;
 
-app.listen(port, () => console.log(`server started on port ${port}`));
+app.listen(PORT, console.log(`server started on port ${PORT}`));
