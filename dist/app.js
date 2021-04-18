@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const flash = require('connect-flash');
 const session = require('express-session');
 const passport = require('passport');
+const play = require('audio-play');
 
 
 
@@ -18,7 +19,6 @@ const app = express();
 
 const db = require('./config/keys').MongoURI;
 
-
 // connect to Mongo
 
 mongoose.connect(db ,{ usenewUrlParser: true })
@@ -29,6 +29,7 @@ mongoose.connect(db ,{ usenewUrlParser: true })
 
 app.use(expressLayouts);
 app.set('view engine', 'ejs');
+app.use( express.static( "public"));
 
 // Body Parser
 
@@ -66,8 +67,7 @@ app.use('/', require('./routes/index'));
 app.use('/users', require('./routes/users'));
 
 
-
-
+// handle Production 
 
 
 const PORT = process.env.PORT || 5000;
