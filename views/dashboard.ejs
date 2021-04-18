@@ -1,0 +1,345 @@
+
+
+    <h1 class="mt-4">Dashboard</h1>
+    <p class="lead mb-3">Welcome <%= name %></p>
+    <body>
+      <h1>Enceladus Music</h1>
+  
+  
+      <div class="music-container">
+          <div class="music-info">
+              <i>
+                  <h4 id="artist"></h3>
+              </i>
+              <h3 id="title">Ukelele</h4>
+              <h5 id="duration">Ukelele</h5>
+  
+              <div class="progress-container">
+                  <div class="progress"></div>
+              </div>
+          </div>
+  
+          <audio src="/public/music/ - Titanium.mp3" id="audio"></audio>
+  
+          <div class="img-container">
+              <img src="igm/efe02ba414043d7b0443b6179f0c71e4.1000x1000x1.jpg" alt="music-cover"
+              id="cover">
+          </div>
+  
+          <div class="navigation">
+              <button id="prev" class="action-btn">
+                  <i class="fas fa-backward" id="back"></i>
+              </button>
+  
+              <button id="play" class="action-btn action-btn-big">
+                  <i class="fas fa-play" id="play22"></i>
+              </button>
+  
+              <button id="next" class="action-btn">
+                  <i class="fas fa-forward"></i>
+              </button>
+          </div>
+      </div>
+  
+  </body>
+      <a href="/users/logout" class="btn btn-secondary">Logout</a>
+    
+<script>
+window.onload = function () { 
+const musicContaier = document.querySelector('.music-container');
+const playButton = document.querySelector('#play');
+const backButton = document.querySelector('#prev');
+const nextButton = document.querySelector('#next');
+const audio = document.querySelector('#audio');
+const progress = document.querySelector('.progress');
+const progressContainer = document.querySelector('.progress-container');
+const title = document.querySelector('#title');
+const artist = document.querySelector('#artist')
+const cover = document.querySelector('#cover');
+const duration = document.querySelector('#duration');
+const playButton2 = document.querySelector('#play22');
+const backy = document.getElementById('back');
+
+// song Titles
+
+const songs = ['hallelu', 'kolo', 'KPK', 'Titanium'];
+const artists = ['Masterkraft x Zlatan x Bella Shmurda ', 'Ice Prince', "Rexxie, MohBad", "Dave"];
+
+
+// keep track of songs 
+
+let songIndex = 1;
+
+
+// intially load song into DOM 
+loadSong(songs[songIndex]);
+
+// update songs details 
+
+function loadSong(song){
+    title.innerText = `${song}`;
+    let artistOfSong = songs.indexOf(song);
+    artist.innerText = `Artist: ${artists[artistOfSong]}`
+    audio.src = `/music/${song}.mp3`;
+    cover.src = `/igm/${song}.jpg`;
+    
+}
+
+// Pay Song
+function playSong(){
+    musicContaier.classList.add('play')
+    playButton.querySelector('i.fas').classList.remove('fa-play');
+    playButton.querySelector('i.fas').classList.add('fa-pause');
+   
+    audio.play();
+     
+    
+}   
+
+// Previous Song
+
+function backSong(){
+    songIndex--
+
+    if(songIndex < 0){
+        songIndex = songs.length - 1;
+    }
+
+    loadSong(songs[songIndex])
+    window.onload = playSong()
+}
+
+// Next Song
+
+function nextSong(){
+    songIndex++
+    if(songIndex > songs.length -1){
+        songIndex = 0;
+    }
+    
+    loadSong(songs[songIndex])
+    playSong()
+}
+
+
+// Update Progress Bar
+
+function updateProgress(e){
+    const {duration, currentTime} = e.srcElement;
+    const progressPercent = (currentTime/duration) * 100;
+    progress.style.width = `${progressPercent}%`
+    
+}
+
+// Pause Song
+function pauseSong(){
+    musicContaier.classList.remove('play')
+    playButton.querySelector('i.fas').classList.add('fa-play');
+    playButton.querySelector('i.fas').classList.remove('fa-pause');
+    audio.pause();
+}
+
+// Set the Progress bar to whatever the current time is
+function setProgress(e){
+    const width = this.clientWidth
+    const clickX = e.offsetX
+    const duration = audio.duration
+    audio.currentTime = (clickX / width) * duration;
+    
+   
+   
+}
+
+// EVENT LISTENERS
+
+// Handle the play Button
+playButton.addEventListener('click', () => {
+    const isPlaying = musicContaier.classList.contains('play');
+
+    if(isPlaying){
+        pauseSong();
+    } else {
+        playSong();
+    }
+})
+
+// Changing Songs
+backButton.addEventListener('click', backSong)
+nextButton.addEventListener('click', nextSong)
+
+// Updating the Progress Bar
+audio.addEventListener('timeupdate',updateProgress)
+progressContainer.addEventListener('click', setProgress)
+
+// Playing the next song after the current one finsishes playing.
+audio.addEventListener('ended' ,nextSong)
+
+
+audio.addEventListener('timeupdate', (event) => {
+    const currentTime = Math.floor(audio.currentTime);
+    const duration = Math.floor(audio.duration);
+    duration.innerText = `${currentTime}`
+}, true);
+
+
+
+// update duration 
+}
+
+</script>
+
+<style>
+@import url('https://fonts.googleapis.com/css?family=Lato&display=swap');
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    height: 100vh;
+    margin: 0;
+    font-family: 'lato', sans-serif;
+    background-image: linear-gradient(
+    0deg,
+     rgb(247, 247, 247) 23,8%, 
+     rgb(252, 221, 221) 92%
+     );
+     display: flex;
+     flex-direction: column;
+     align-items: center;
+     justify-content: center;
+}
+
+.music-container {
+    background-color: white;
+    border-radius: 15px;
+    box-shadow: 0 20px 20px 0 rgba(252,169,169, 0.6);
+    display: flex;
+    padding: 1.25rem 1.875rem ;
+    position: relative;
+    margin: 6.25rem 0;
+    z-index: 10;
+    
+}
+.img-container{
+    position: relative;
+    width: 6.875rem;
+}
+
+.img-container::after {
+    content: '';
+    background-color: white;
+    height: 20px;
+    width: 20px;
+    position: absolute;
+    left: 50%;
+    bottom: 50%;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.img-container img {
+    width: inherit;
+    height: 110px;
+    border-radius: 50%;
+    object-fit: cover;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+
+    animation: rotate 3s linear infinite;
+    animation-play-state: paused;
+
+    
+}
+
+.music-container.play .img-container img {
+    animation-play-state: running;
+}
+
+
+@keyframes rotate {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+.navigation {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1;
+}
+
+.action-btn {
+    background-color: white;
+    border: 0;
+    color: #dfdbdf;
+    font-size: 20px;
+    cursor: pointer;
+    padding: 10px;
+    margin: 0 20px;
+}
+
+.action-btn-big {
+    color: #cdc2d0;
+    font-size: 30px;
+
+}
+
+.action-btn:focus {
+    outline: 0;
+}
+
+.music-info{
+    background-color: rgba(255,2500,255, 0.5);
+    border-radius: 15px 15px 0 0;
+    position: absolute;
+    top: 0;
+    left: 20px;
+    width: calc(100% - 40px);
+    padding: 0px 0px 0px 150px;
+    margin-top: 50px;
+    margin-bottom: 50px;
+    opacity: 0;
+    transform: translateY(0%);
+    transition: transform 0.3s ease-in; opacity: 0.3s
+    ease-in;
+
+}
+
+.music-info h4 {
+    margin: 0;
+}
+.music-container.play .music-info{
+    opacity: 1;
+    transform:  translateY(-100%);
+}
+
+.progress-container {
+    background-color: red;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 10px 0;
+    height: 4px;
+    width: 100%;
+    margin-bottom: 40px;
+}
+
+.progress{
+    background-color: blue;
+    border-radius: 5px;
+    height: 100%;
+    width: 0%;
+    transition:  width 0.1s linear;
+   
+}
+
+#title, #artist, #duration {
+    margin-top: 2px;
+}
+
+</style>
